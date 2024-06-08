@@ -1,8 +1,52 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+model User {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+  ratings  Rating[]
+}
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+model Movie {
+  id          Int      @id @default(autoincrement())
+  title       String
+  releaseDate DateTime
+  description String
+  genre       Genre
+  ratings     Rating[]
+}
+
+model Rating {
+  id      Int @id @default(autoincrement())
+  score   Int
+  userId  Int
+  movieId Int
+
+  user  User  @relation(fields: [userId], references: [id])
+  movie Movie @relation(fields: [movieId], references: [id])
+
+  @@unique([userId, movieId])
+}
+
+enum Genre {
+  ACTION
+  ADVENTURE
+  ANIMATION
+  COMEDY
+  CRIME
+  DOCUMENTARY
+  DRAMA
+  FAMILY
+  FANTASY
+  HISTORY
+  HORROR
+  MUSIC
+  MYSTERY
+  ROMANCE
+  SCIENCE_FICTION
+  TV_MOVIE
+  THRILLER
+  WAR
+  WESTERN
+}
 
 generator client {
   provider = "prisma-client-js"
