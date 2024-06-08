@@ -21,7 +21,11 @@
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prisma:build": "yarn prisma:migrate && yarn prisma:generate",
     "prisma:migrate": "yarn prisma migrate dev",
-    "prisma:generate": "yarn prisma generate"
+    "prisma:generate": "yarn prisma generate",
+    "prisma:seed": "yarn prisma db seed "
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "dependencies": {
     "@nestjs/common": "^10.0.0",
