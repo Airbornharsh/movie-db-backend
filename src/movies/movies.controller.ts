@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Query, Response } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  Response,
+} from '@nestjs/common';
 import { MoviesService } from './movies.service';
 
 @Controller('movies')
@@ -52,5 +61,45 @@ export class MoviesController {
     @Query('limit') limit: number = 10,
   ) {
     return this.moviesService.getMoviesSortedByRating(page, limit);
+  }
+
+  @Post()
+  async createMovie(
+    @Body()
+    createMovieDto: {
+      title: string;
+      releaseDate: Date;
+      description?: string;
+      genre: string;
+    },
+    @Response() res,
+  ) {
+    if (res.locals.user.admin === false) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    const movie = await this.moviesService.createMovie(createMovieDto);
+    return res.status(201).json(movie);
+  }
+
+  @Put(':id')
+  async updateMovie(
+    @Param('id') id: string,
+    @Body()
+    updateMovieDto: {
+      title?: string;
+      releaseDate?: Date;
+      description?: string;
+      genre?: string;
+    },
+    @Response() res,
+  ) {
+    if (res.locals.user.admin === false) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+    const updatedMovie = await this.moviesService.updateMovie(
+      id,
+      updateMovieDto,
+    );
+    return res.status(200).json(updatedMovie);
   }
 }

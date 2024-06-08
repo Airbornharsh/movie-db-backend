@@ -1,12 +1,16 @@
 import { Injectable, NestMiddleware } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response, NextFunction } from 'express';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class JwtMiddleware implements NestMiddleware {
-  constructor(private jwtService: JwtService) {}
+  constructor(
+    private jwtService: JwtService,
+    private prismaService: PrismaService,
+  ) {}
 
-  use(req: Request, res: Response, next: NextFunction) {
+  async use(req: Request, res: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
     if (authHeader) {
       console.log('Decoded token');
@@ -16,7 +20,14 @@ export class JwtMiddleware implements NestMiddleware {
         const decoded = this.jwtService.verify(token, {
           secret: process.env.JWT_SECRET || 'your_jwt_secret_key',
         });
-        res.locals.user = decoded;
+        const user = await this.prismaService.user.findUnique({
+          where: { id: decoded.sub },
+        });
+        res.locals.user = {
+          sub: decoded.sub,
+          email: decoded.email,
+          admin: user.admin || false,
+        };
       } catch (err) {
         console.error('Invalid token', err);
       }

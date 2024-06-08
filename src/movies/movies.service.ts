@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { $Enums } from '@prisma/client';
+import { $Enums, Movie } from '@prisma/client';
 
 @Injectable()
 export class MoviesService {
@@ -81,5 +81,44 @@ export class MoviesService {
       page,
       lastPage: Math.ceil(totalMovies / limit),
     };
+  }
+
+  async createMovie(data: {
+    title: string;
+    releaseDate: Date;
+    description?: string;
+    genre: string;
+  }): Promise<Movie> {
+    return this.prisma.movie.create({
+      data: {
+        title: data.title,
+        releaseDate: data.releaseDate,
+        description: data.description,
+        genre: data.genre as $Enums.Genre,
+      },
+    });
+  }
+
+  async updateMovie(
+    id: string,
+    data: {
+      title?: string;
+      releaseDate?: Date;
+      description?: string;
+      genre?: string;
+    },
+  ): Promise<Movie> {
+    const updateData: Partial<Movie> = {};
+    if (data.title !== undefined) updateData.title = data.title;
+    if (data.releaseDate !== undefined)
+      updateData.releaseDate = data.releaseDate;
+    if (data.description !== undefined)
+      updateData.description = data.description;
+    if (data.genre !== undefined) updateData.genre = data.genre as $Enums.Genre;
+
+    return this.prisma.movie.update({
+      where: { id: parseInt(id) },
+      data: updateData,
+    });
   }
 }
