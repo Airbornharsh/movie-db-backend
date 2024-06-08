@@ -16,19 +16,26 @@ export class MoviesController {
 
   @Get()
   async getAllMovies(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
   ) {
-    return await this.moviesService.getAllMovies(page, limit);
+    return await this.moviesService.getAllMovies(
+      parseInt(page),
+      parseInt(limit),
+    );
   }
 
   @Get('genre')
   async getMoviesByGenre(
     @Query('genre') genre: string,
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
   ) {
-    return await this.moviesService.getMoviesByGenre(genre, page, limit);
+    return await this.moviesService.getMoviesByGenre(
+      genre,
+      parseInt(page),
+      parseInt(limit),
+    );
   }
 
   @Post('rate')
@@ -57,10 +64,13 @@ export class MoviesController {
 
   @Get('sorted-by-rating')
   async getMoviesSortedByRating(
-    @Query('page') page: number = 1,
-    @Query('limit') limit: number = 10,
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
   ) {
-    return this.moviesService.getMoviesSortedByRating(page, limit);
+    return this.moviesService.getMoviesSortedByRating(
+      parseInt(page),
+      parseInt(limit),
+    );
   }
 
   @Post()
@@ -97,7 +107,7 @@ export class MoviesController {
       return res.status(403).json({ message: 'Forbidden' });
     }
     const updatedMovie = await this.moviesService.updateMovie(
-      id,
+      parseInt(id),
       updateMovieDto,
     );
     return res.status(200).json(updatedMovie);

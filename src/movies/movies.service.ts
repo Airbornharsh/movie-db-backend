@@ -100,7 +100,7 @@ export class MoviesService {
   }
 
   async updateMovie(
-    id: string,
+    id: number,
     data: {
       title?: string;
       releaseDate?: Date;
@@ -117,7 +117,7 @@ export class MoviesService {
     if (data.genre !== undefined) updateData.genre = data.genre as $Enums.Genre;
 
     return this.prisma.movie.update({
-      where: { id: parseInt(id) },
+      where: { id },
       data: updateData,
     });
   }
