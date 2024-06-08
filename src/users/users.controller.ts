@@ -1,4 +1,4 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, Response } from '@nestjs/common';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -21,5 +21,18 @@ export class UsersController {
       return this.usersService.login(user);
     }
     return { message: 'Invalid credentials' };
+  }
+
+  @Get('admin')
+  async getAdmin(@Response() res) {
+    const user = await this.usersService.makeAdmin(res.locals.user.sub);
+    return res.status(200).json({
+      message: 'You are now an admin',
+      user: {
+        id: user.id,
+        email: user.email,
+        admin: user.admin,
+      },
+    });
   }
 }

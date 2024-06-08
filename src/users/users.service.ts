@@ -40,4 +40,13 @@ export class UsersService {
       access_token: this.jwtService.sign(payload),
     };
   }
+
+  async makeAdmin(userId: number) {
+    return this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        admin: true,
+      },
+    });
+  }
 }

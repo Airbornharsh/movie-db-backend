@@ -10,7 +10,7 @@ export class MoviesController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
   ) {
-    return this.moviesService.getAllMovies(page, limit);
+    return await this.moviesService.getAllMovies(page, limit);
   }
 
   @Get('genre')
@@ -19,7 +19,7 @@ export class MoviesController {
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
   ) {
-    return this.moviesService.getMoviesByGenre(genre, page, limit);
+    return await this.moviesService.getMoviesByGenre(genre, page, limit);
   }
 
   @Post('rate')
